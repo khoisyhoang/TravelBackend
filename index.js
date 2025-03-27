@@ -5,16 +5,14 @@ const app = express()
 app.set('views', path.join(__dirname, "views"));
 app.set('view engine', 'pug');
 
+app.use(express.static(path.join(__dirname, "public")))
 
 app.get('/', (req, res) => {
   res.render("client/pages/home")
 })
 
 app.get('/tours', (req, res) => {
-  res.render("client/pages/tour-list", {
-    a: 10,
-    b: 20
-  })
+  res.render("client/pages/tour-list")
 })
 
 app.get('/tours', (req, res) => {
