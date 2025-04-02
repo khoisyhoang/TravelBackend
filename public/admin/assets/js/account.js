@@ -122,9 +122,28 @@ if(registerForm) {
       const email = event.target.email.value;
       const password = event.target.password.value;
 
-      console.log(fullName);
-      console.log(email);
-      console.log(password);
+      const dataFinal = {
+        fullName: fullName,
+        email: email,
+        password: password
+      };
+
+      fetch(`/${pathAdmin}/account/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === "error") {
+            alert(data.message);
+          }
+          else {
+            window.location.href = `/admin/account/register-initial`
+          }
+        });
     })
   ;
 }
@@ -141,7 +160,7 @@ if(forgotPasswordForm) {
         rule: 'required',
         errorMessage: 'Vui lòng nhập email của bạn!',
       },
-      {
+      { 
         rule: 'email',
         errorMessage: 'Email không đúng định dạng!',
       },

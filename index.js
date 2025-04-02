@@ -21,6 +21,9 @@ app.use(express.static(path.join(__dirname, "public")))
 // Create Global Var
 app.locals.pathAdmin = variableConfig.pathAdmin;
 
+// Allow JSON data
+app.use(express.json());
+
 // Routes
 app.use("/", clientRoute)
 app.use(`/${variableConfig.pathAdmin}`, adminRoute)
