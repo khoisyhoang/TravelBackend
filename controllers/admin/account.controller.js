@@ -131,3 +131,10 @@ module.exports.registerInitial = (req, res) => {
     pageTitle: "Successfully created account",
   })
 }
+module.exports.logoutPost = (req, res) => {
+  res.clearCookie("token"); // clear cookie
+  res.json({
+    code: "succeeded",
+    message: "Success"
+  })
+}
