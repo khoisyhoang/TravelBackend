@@ -134,7 +134,7 @@ module.exports.registerInitial = (req, res) => {
 module.exports.logoutPost = (req, res) => {
   res.clearCookie("token"); // clear cookie
   res.json({
-    code: "succeeded",
+    code: "success",
     message: "Success"
   })
 }
