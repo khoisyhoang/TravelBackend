@@ -1,6 +1,6 @@
 // Login Form
 const loginForm = document.querySelector("#login-form");
-if(loginForm) {
+if (loginForm) {
   const validation = new JustValidate('#login-form');
 
   validation
@@ -44,15 +44,36 @@ if(loginForm) {
       const email = event.target.email.value;
       const password = event.target.password.value;
       const rememberPassword = event.target.rememberPassword.checked;
+      const dataFinal = {
+        email: email,
+        password: password,
+        rememberPassword: rememberPassword
+      };
 
+      fetch(`/${pathAdmin}/account/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === "error") {
+            alert(data.message);
+          }
+          else {
+            window.location.href = `/${pathAdmin}/dashboard`;
+          }
+        });
     })
-  ;
+    ;
 }
 // End Login Form
 
 // Register Form
 const registerForm = document.querySelector("#register-form");
-if(registerForm) {
+if (registerForm) {
   const validation = new JustValidate('#register-form');
 
   validation
@@ -138,17 +159,17 @@ if(registerForm) {
             alert(data.message);
           }
           else {
-            window.location.href = `/admin/account/register-initial`
+            window.location.href = `/${pathAdmin}/account/register-initial`
           }
         });
     })
-  ;
+    ;
 }
 // End Register Form
 
 // Forgot Password Form
 const forgotPasswordForm = document.querySelector("#forgot-password-form");
-if(forgotPasswordForm) {
+if (forgotPasswordForm) {
   const validation = new JustValidate('#forgot-password-form');
 
   validation
@@ -157,7 +178,7 @@ if(forgotPasswordForm) {
         rule: 'required',
         errorMessage: 'Vui lòng nhập email của bạn!',
       },
-      { 
+      {
         rule: 'email',
         errorMessage: 'Email không đúng định dạng!',
       },
@@ -166,13 +187,13 @@ if(forgotPasswordForm) {
       const email = event.target.email.value;
       console.log(email);
     })
-  ;
+    ;
 }
 // End Forgot Password Form
 
 // OTP Password Form
 const otpPasswordForm = document.querySelector("#otp-password-form");
-if(otpPasswordForm) {
+if (otpPasswordForm) {
   const validation = new JustValidate('#otp-password-form');
 
   validation
@@ -186,13 +207,13 @@ if(otpPasswordForm) {
       const otp = event.target.otp.value;
       console.log(otp);
     })
-  ;
+    ;
 }
 // End OTP Password Form
 
 // Reset Password Form
 const resetPasswordForm = document.querySelector("#reset-password-form");
-if(resetPasswordForm) {
+if (resetPasswordForm) {
   const validation = new JustValidate('#reset-password-form');
 
   validation
@@ -239,6 +260,6 @@ if(resetPasswordForm) {
       const password = event.target.password.value;
       console.log(password);
     })
-  ;
+    ;
 }
 // End Reset Password Form
