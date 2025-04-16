@@ -18,7 +18,6 @@ module.exports.verifyToken = async (req, res, next) => {
         });
 
         if (!existAccount) {
-            
             res.redirect(`/${pathAdmin}/account/login`);
             return;
         }

@@ -1,6 +1,11 @@
 const AccountAdmin = require("../../models/account-admin.model")
+const ForgotPassword = require("../../models/forgot-password.model");
 const bcrypt = require("bcryptjs")
 var jwt = require('jsonwebtoken');
+
+const generateHelper = require("../../helpers/generate.helper");
+const mailHelper = require("../../helpers/mail.helper");
+
 
 module.exports.login = (req, res) => {
   res.render("admin/pages/login", {
@@ -53,7 +58,7 @@ module.exports.registerPost = async (req, res) => {
 
 module.exports.loginPost = async (req, res) => {
   // req.body : data from fetch() in front end
-  const { email, password } = req.body;
+  const { email, password, rememberPassword } = req.body;
 
   const existAccount = await AccountAdmin.findOne({
     email: email
@@ -93,12 +98,12 @@ module.exports.loginPost = async (req, res) => {
     id: existAccount.id,
     email: existAccount.email
   }, process.env.JWT_SECRET, {
-    expiresIn: "1h" // 1 hour
+    expiresIn: rememberPassword ? "30d" : "1d" // expires in 1 hour
   });
 
   // Save to cookie
   res.cookie("token", token, {
-    maxAge: 25 * 60 * 60 * 1000, // 1 day,
+    maxAge: rememberPassword? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000, // remove the cookie after 1 day
     httpOnly: true, // only server can access this cookie
     sameSite: "Strict", // only send cookie to same site
   });
@@ -115,6 +120,55 @@ module.exports.forgotPassword = (req, res) => {
   res.render("admin/pages/forgot-password", {
     pageTitle: "Forgot Password",
   })
+}
+module.exports.forgotPasswordPost = async (req, res) => {
+  const {email} = req.body;
+  const existAccount = await AccountAdmin.findOne({
+    email: email
+  })
+  
+  
+  if (!existAccount) {
+ 
+    res.json({
+      code: "error",
+      message: "Email Not Found"
+    })
+    return;
+  }
+  // Check whether that email has OTP code in the database
+  const existEmailInForgotPassword = await ForgotPassword.findOne({
+    email: email
+  });
+  if (existEmailInForgotPassword) {
+    res.json({
+      code: "error",
+      message: "Your OTP code still valid!"
+    })
+    return;
+  }
+
+  // Create OPT code
+  const otp = generateHelper.generateOtp(4); // 4 digits
+
+  // Save OTP code to database, delete after 5 minutes
+  const newRecord = new ForgotPassword({
+    email: email,
+    otp: otp,
+    expireAt: new Date(Date.now() + 5 * 60 * 1000) // 5 minutes
+  });
+  await newRecord.save();
+
+  // send email to user with OTP code
+  const subject = "Travel App - Verify your OTP"
+  const content = `Your OTP is <b>${otp}</b>. This will be valid in 5 minutes, don't give this code to anyone:)`
+  mailHelper.sendMail(email, subject, content);
+
+  res.json({
+    code: "success",
+    message: "success"
+  })
+ 
 }
 module.exports.otpPassword = (req, res) => {
   res.render("admin/pages/otp-password", {
