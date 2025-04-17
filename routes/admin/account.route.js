@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const accountController = require('../../controllers/admin/account.controller');
 const accountValidate = require('../../validate/admin/account.validate');
+const authMiddleware = require('../../middleware/admin/auth.middleware');
 
 router.get('/login', accountController.login);
 router.post('/login', 
@@ -21,6 +22,7 @@ router.get('/otp-password', accountController.otpPassword);
 router.post('/otp-password', accountController.otpPasswordPost);
 
 router.get('/reset-password', accountController.resetPassword);
+router.post('/reset-password', authMiddleware.verifyToken, accountController.resetPasswordPost);
 
 router.get('/register-initial', accountController.registerInitial);
 

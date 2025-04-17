@@ -14,14 +14,14 @@ module.exports.verifyToken = async (req, res, next) => {
         const existAccount = await AccountAdmin.findOne({
             _id: id,
             email: email,
-            status: "initial"
+            status: "initial"  
         });
 
         if (!existAccount) {
             res.redirect(`/${pathAdmin}/account/login`);
             return;
         }
-
+        req.account = existAccount;
         next();
     } catch (error) {
         res.clearCookie("token");

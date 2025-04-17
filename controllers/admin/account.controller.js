@@ -12,49 +12,6 @@ module.exports.login = (req, res) => {
     pageTitle: "Login",
   })
 }
-module.exports.register = (req, res) => {
-  res.render("admin/pages/register", {
-    pageTitle: "Register",
-  })
-}
-module.exports.registerPost = async (req, res) => {
-  // req.body : data from fetch() in front end
-  const { fullName, email, password } = req.body;
-
-  const existAccount = await AccountAdmin.findOne({
-    email: email
-  }
-  );
-  
-  if (existAccount) {
-    // Send data to front end
-    res.json({
-      code: "error",
-      message: "Email Existed"
-    })
-    return;
-  }
-
-  // Encrypt
-  const salt = await bcrypt.genSalt(10); // create 10 random char
-  const hash = await bcrypt.hash(password, salt);
-
-  const newAccount = new AccountAdmin({
-    fullName: fullName,
-    email: email,
-    password: hash,
-    status: "initial"
-  });
-
-  await newAccount.save();
-
-  // Send data to front end
-  res.json({
-    code: "succeeded",
-    message: "Success"
-  })
-}
-
 
 module.exports.loginPost = async (req, res) => {
   // req.body : data from fetch() in front end
@@ -111,11 +68,57 @@ module.exports.loginPost = async (req, res) => {
 
   // Check status
   res.json({
-    code: "succeeded",
+    code: "success",
     message: "Success",
     
   })
 }
+
+module.exports.register = (req, res) => {
+  res.render("admin/pages/register", {
+    pageTitle: "Register",
+  })
+}
+module.exports.registerPost = async (req, res) => {
+  // req.body : data from fetch() in front end
+  const { fullName, email, password } = req.body;
+
+  const existAccount = await AccountAdmin.findOne({
+    email: email
+  }
+  );
+  
+  if (existAccount) {
+    // Send data to front end
+    res.json({
+      code: "error",
+      message: "Email Existed"
+    })
+    return;
+  }
+
+  // Encrypt
+  const salt = await bcrypt.genSalt(10); // create 10 random char
+  const hash = await bcrypt.hash(password, salt);
+
+  const newAccount = new AccountAdmin({
+    fullName: fullName,
+    email: email,
+    password: hash,
+    status: "initial"
+  });
+
+  await newAccount.save();
+
+  // Send data to front end
+  res.json({
+    code: "succeeded",
+    message: "Success"
+  })
+}
+
+
+
 module.exports.forgotPassword = (req, res) => {
   res.render("admin/pages/forgot-password", {
     pageTitle: "Forgot Password",
@@ -222,6 +225,23 @@ module.exports.otpPasswordPost = async (req, res) => {
 module.exports.resetPassword = (req, res) => {
   res.render("admin/pages/reset-password", {
     pageTitle: "Reset Password",
+  })
+}
+module.exports.resetPasswordPost = async (req, res) => {
+  const {password} = req.body;
+  const salt = await bcrypt.genSalt(10); // create 10 random char
+  const hash = await bcrypt.hash(password, salt);
+
+  await AccountAdmin.updateOne({
+    _id: req.account.id
+
+  }, {
+    password: hash
+  })
+
+  res.json({
+    code: "success",
+    message: "Done Changing pasword"
   })
 }
 module.exports.registerInitial = (req, res) => {

@@ -225,7 +225,7 @@ if (otpPasswordForm) {
       const otp = event.target.otp.value;
       const urlParams = new URLSearchParams(window.location.search); // window.location.search return everything after ?
       const email = urlParams.get("email");
-      
+
       const dataFinal = {
         otp: otp,
         email: email,
@@ -299,7 +299,26 @@ if (resetPasswordForm) {
     ])
     .onSuccess((event) => {
       const password = event.target.password.value;
-      console.log(password);
+      const dataFinal = {
+        password: password
+      }
+      fetch(`/${pathAdmin}/account/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === "error") {
+            alert(data.message);
+          }
+          else if (data.code === "success") {
+            window.location.href = `/${pathAdmin}/dashboard`
+          }
+        });
+
     })
     ;
 }
