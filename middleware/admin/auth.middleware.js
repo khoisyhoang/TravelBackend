@@ -14,7 +14,7 @@ module.exports.verifyToken = async (req, res, next) => {
         const existAccount = await AccountAdmin.findOne({
             _id: id,
             email: email,
-            status: "initial"  
+            status: "initial"
         });
 
         if (!existAccount) {
@@ -22,7 +22,9 @@ module.exports.verifyToken = async (req, res, next) => {
             return;
         }
         req.account = existAccount;
+        res.locals.account = existAccount;
         next();
+
     } catch (error) {
         res.clearCookie("token");
         res.redirect(`/${pathAdmin}/account/login`);
