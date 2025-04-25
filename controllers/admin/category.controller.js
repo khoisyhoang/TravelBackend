@@ -1,13 +1,21 @@
 const Category = require("../../models/category.model")
+const categoryHelper = require("../../helpers/category.helper")
 
 module.exports.list = (req, res) => {
     res.render("admin/pages/category-list", {
       pageTitle: "Mange category",
     })
 }
-module.exports.create = (req, res) => {
+module.exports.create = async (req, res) => {
+    const categoryList = await Category.find({
+      deleted: false
+    })
+    const categoryTree = categoryHelper.buildCategoryTree(categoryList);
+    
+    
     res.render("admin/pages/category-create", {
       pageTitle: "Create category",
+      categoryList: categoryTree
     })
 }
 module.exports.createPost = async (req, res) => {
