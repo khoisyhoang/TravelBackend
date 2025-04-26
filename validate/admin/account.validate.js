@@ -68,7 +68,7 @@ module.exports.loginPost = (req, res, next) => {
         email: Joi.string()
             .required()
             .email()
-            .message({
+            .messages({
                 "string.empty": "Enter Email",
                 "string.email": "Enter Email",
                 
