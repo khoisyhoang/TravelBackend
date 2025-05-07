@@ -1,9 +1,37 @@
+const moment = require('moment'); 
 const Category = require("../../models/category.model")
+const AccountAdmin = require("../../models/account-admin.model")
 const categoryHelper = require("../../helpers/category.helper")
 
-module.exports.list = (req, res) => {
+module.exports.list = async (req, res) => {
+    const categoryList = await Category.find({
+      deleted: false
+    }).sort({
+      position: "asc"
+    })
+
+    for (const item of categoryList) {
+      if (item.createdBy){
+        const inforAccountCreated = await AccountAdmin.findOne( { _id: item.createdBy } )
+        item.createdByFullName = inforAccountCreated.fullName;
+        
+      }
+      
+
+      if (item.updatedBy){
+        const inforAccountUpdated = await AccountAdmin.findOne( { _id: item.updatedBy } );
+        item.updatedByFullName = inforAccountUpdated.fullName;
+        
+      }
+      
+      item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY");
+      item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY");
+    }
+    
+    
     res.render("admin/pages/category-list", {
       pageTitle: "Mange category",
+      categoryList: categoryList
     })
 }
 module.exports.create = async (req, res) => {
@@ -30,7 +58,7 @@ module.exports.createPost = async (req, res) => {
       req.body.position = totalRecord + 1;
     }
 
-    req.body.createBy = req.account.id;
+    req.body.createdBy = req.account.id;
     req.body.updatedBy = req.account.id;
     req.body.avatar = req.file ? req.file.path : "";
     
