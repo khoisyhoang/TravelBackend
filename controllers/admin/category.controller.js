@@ -37,6 +37,10 @@ module.exports.createPost = async (req, res) => {
     const newRecord = new Category(req.body);
     await newRecord.save();
 
+    // return message to pug files object message = {"success" : "Category created successfully"}
+    req.flash("success", "Category created successfully");
+    
+
     res.json({
       code: "success",
       message: "Done creating categ"

@@ -6,8 +6,8 @@ const adminRoute = require('./routes/admin/index.route')
 const clientRoute = require('./routes/client/index.route')
 const variableConfig = require('./config/variable')
 var cookieParser = require('cookie-parser')
-
-
+const flash = require('express-flash')
+const session = require('express-session')
 
 const port = 3000
 const app = express()
@@ -32,7 +32,17 @@ global.pathAdmin = variableConfig.pathAdmin;
 app.use(express.json());
 
 // Cookie Parser
-app.use(cookieParser());
+app.use(cookieParser('lmaoo'));
+
+// Flash message
+app.use(session({
+  secret: 'yourSecretKey', // Secret is necessary for signing cookies
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 } // Session will expire after 60 seconds
+}));
+
+app.use(flash());
 
 // Routes
 app.use("/", clientRoute)
