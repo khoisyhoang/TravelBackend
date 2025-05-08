@@ -1,7 +1,10 @@
 
-mixin options(categoryList, i)
+mixin options(categoryList, i, parentId = "")
     each item in categoryList 
-        option(value=item.id) #{"- - ".repeat(i) + item.name}            
+        option(
+            value=item.id
+            selected=(parentId ==  item.id ? true : false)
+        ) #{"- - ".repeat(i) + item.name}            
         if (item.children && item.children.length > 0)
-            +options(item.children, (i + 1))
+            +options(item.children, (i + 1), parentId)
         
