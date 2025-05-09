@@ -745,3 +745,26 @@ if (alertTime) {
   }, time);
 }
 // End Alert
+
+// Button Delete
+const buttonDelete = document.querySelectorAll("[button-delete]");
+if (buttonDelete.length > 0) {
+  buttonDelete.forEach(button => {
+    button.addEventListener("click", () => {
+      const dataApi = button.getAttribute("data-api");
+      fetch (dataApi, {
+        method: "PATCH"
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === "error"){
+            alert(data.message);
+          }
+          else if (data.code === "success"){
+            window.location.reload();
+          }
+        }) 
+    })
+  })
+}
+// End Button Delete

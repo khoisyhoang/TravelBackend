@@ -8,12 +8,19 @@ html
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css")
     link(rel="stylesheet", href="https://unpkg.com/filepond@^4/dist/filepond.css")
     link(rel="stylesheet", href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css")
-    link(rel="preload" as="font" href="https://fonts.gstatic.com/s/nunitosans/v15/pe0qMImSLYBIv1o4X1M8cce9I9tAcVw.woff2" type="font/woff2" crossorigin)
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(rel="preload", as="style", href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap")
     link(rel="stylesheet", href="/admin/assets/css/style.css")
-    script(src="https://cdn.tiny.cloud/1/c86ykjogrym50wn421xqpjl1tg614r0iqfdmo6rdt9l10tuj/tinymce/7/tinymce.min.js" referrerpolicy="origin")
+    
+    //- Only load TinyMCE on pages that need it
+    if !notloadtinyMCE
+      script(src="https://cdn.tiny.cloud/1/c86ykjogrym50wn421xqpjl1tg614r0iqfdmo6rdt9l10tuj/tinymce/7/tinymce.min.js" referrerpolicy="origin")
+      script(src="/admin/assets/js/tinymce-config.js")
+    
     script.
       const pathAdmin = "#{pathAdmin}";
-    script(src="/admin/assets/js/tinymce-config.js")
   body
     - if (messages.success) 
       div( class="alert alert-success" alert-time="3000")
@@ -30,7 +37,6 @@ html
     main.main
       block main
     //- End Main
-
     script(src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js")
     script(src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js") 
     script(src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js") 

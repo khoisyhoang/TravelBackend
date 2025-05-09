@@ -31,7 +31,8 @@ module.exports.list = async (req, res) => {
 
   res.render("admin/pages/category-list", {
     pageTitle: "Mange category",
-    categoryList: categoryList
+    categoryList: categoryList,
+    notloadtinyMCE: true
   })
 }
 module.exports.create = async (req, res) => {
@@ -126,6 +127,31 @@ module.exports.editPatch = async (req, res) => {
     }, req.body)
 
     req.flash("success", "Done creating category")
+
+    res.json({
+      code: "success"
+    })
+  } catch (error) {
+    res.json({
+      code: "error",
+      message: "Category not found"
+    })
+  }
+
+
+}
+module.exports.deletePatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Category.updateOne({
+      _id: id
+    }, {
+      deleted: true,
+      deletedBy: req.account.id,
+      deletedAt: Date.now()
+    })
+    
+    req.flash("success", "Deleted category")
 
     res.json({
       code: "success"
