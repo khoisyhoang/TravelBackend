@@ -768,3 +768,25 @@ if (buttonDelete.length > 0) {
   })
 }
 // End Button Delete
+
+// Filter status categ list
+const filterStatus = document.querySelector("[filter-status]")
+if (filterStatus) {
+  const url = new URL(window.location.href)
+  filterStatus.addEventListener("change", () => {
+    const value = filterStatus.value;
+    if (value){
+      url.searchParams.set('status', value)
+    }
+    else {
+      url.searchParams.delete('status');
+    }
+    window.location.href = url.href;
+    
+    
+  })
+  
+  const currentVal = url.searchParams.get('status');
+  if (currentVal) filterStatus.value = currentVal;
+  
+}
