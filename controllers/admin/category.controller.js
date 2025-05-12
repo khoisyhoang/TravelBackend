@@ -4,19 +4,23 @@ const AccountAdmin = require("../../models/account-admin.model")
 const categoryHelper = require("../../helpers/category.helper")
 
 module.exports.list = async (req, res) => {
-
+  
   const toFind = {
     deleted: false
   }
-
+  // Filter by status
   if (req.query.status){
     toFind.status = req.query.status
+  }
+  // Filter by creators
+  if (req.query.createdBy){
+    toFind.createdBy = req.query.createdBy
   }
 
   const categoryList = await Category.find(toFind).sort({
     position: "asc"
   })
-
+  
   for (const item of categoryList) {
     if (item.createdBy) {
       const inforAccountCreated = await AccountAdmin.findOne({ _id: item.createdBy })
@@ -35,11 +39,15 @@ module.exports.list = async (req, res) => {
     item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY");
   }
 
+  const accountAdminList = await AccountAdmin
+    .find({})
+    .select("id fullName");
 
   res.render("admin/pages/category-list", {
     pageTitle: "Mange category",
     categoryList: categoryList,
-    notloadtinyMCE: true
+    notloadtinyMCE: true,
+    accountAdminList: accountAdminList
   })
 }
 module.exports.create = async (req, res) => {

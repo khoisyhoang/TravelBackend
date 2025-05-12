@@ -790,3 +790,27 @@ if (filterStatus) {
   if (currentVal) filterStatus.value = currentVal;
   
 }
+// End Filter status categ list
+
+// filterCreatedBy
+const filterCreatedBy = document.querySelector("[filter-created-by]")
+if (filterCreatedBy) {
+  const url = new URL(window.location.href)
+  filterCreatedBy.addEventListener("change", () => {
+    const value = filterCreatedBy.value;
+    if (value){
+      url.searchParams.set('createdBy', value)
+    }
+    else {
+      url.searchParams.delete('createdBy');
+    }
+    window.location.href = url.href;
+    
+    
+  })
+  
+  const currentVal = url.searchParams.get('createdBy');
+  if (currentVal) filterCreatedBy.value = currentVal;
+  
+}
+// End filterCreatedBy
