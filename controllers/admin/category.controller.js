@@ -7,6 +7,7 @@ module.exports.list = async (req, res) => {
   
   const toFind = {
     deleted: false
+
   }
   // Filter by status
   if (req.query.status){
@@ -17,6 +18,22 @@ module.exports.list = async (req, res) => {
     toFind.createdBy = req.query.createdBy
   }
 
+  // Filter by date created
+  const dateFilter = {};
+
+  if (req.query.startDate){
+    const startDate = moment(req.query.startDate).startOf("date").toDate()
+    dateFilter.$gte = startDate;
+  }
+  if (req.query.endDate){
+    const endDate = moment(req.query.endDate).endOf("date").toDate()
+    dateFilter.$lte = endDate;
+  }
+  if (Object.keys(dateFilter).length > 0) {
+    toFind.createdAt = dateFilter;
+  }
+  
+  
   const categoryList = await Category.find(toFind).sort({
     position: "asc"
   })
